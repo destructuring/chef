@@ -2,7 +2,7 @@ $:.unshift(File.dirname(__FILE__) + '/lib')
 require 'chef/version'
 
 Gem::Specification.new do |s|
-  s.name = 'chef'
+  s.name = 'microwave'
   s.version = Chef::VERSION
   s.platform = Gem::Platform::RUBY
   s.has_rdoc = true
