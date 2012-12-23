@@ -1,0 +1,5 @@
+---
+remotes:
+  vendor: https://github.com/opscode/chef
+  primary: git@github.com:destructuring/chef
+  secondary: git@bitbucket.org:destructuring/chef
