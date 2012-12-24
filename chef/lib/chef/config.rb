@@ -51,7 +51,7 @@ class Chef
       #10.times { puts "* " * 40}
       #pp caller
       
-      path = File.join(alt_root, path)
+      path = File.join(ENV['MICROWAVE_ROOT'] || '/', path)
 
       if RUBY_PLATFORM =~ /mswin|mingw|windows/
         # turns /etc/chef/client.rb into C:/chef/client.rb
@@ -327,7 +327,5 @@ class Chef
     # returns a platform specific path to the user home dir
     windows_home_path = ENV['SYSTEMDRIVE'] + ENV['HOMEPATH'] if ENV['SYSTEMDRIVE'] && ENV['HOMEPATH']
     user_home (ENV['HOME'] || windows_home_path || ENV['USERPROFILE'])
-
-    alt_root (ENV['MICROWAVE_ROOT'] || '')
   end
 end
