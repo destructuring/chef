@@ -65,11 +65,11 @@ class Chef
     # Run the start handlers. This will usually be called by a notification
     # from Chef::Client
     def self.run_start_handlers(run_status)
-      Chef::Log.info("Running start handlers")
+      Chef::Log.info("Running start handlers") unless Chef::Config[:quiet_logging]
       start_handlers.each do |handler|
         handler.run_report_safely(run_status)
       end
-      Chef::Log.info("Start handlers complete.")
+      Chef::Log.info("Start handlers complete.") unless Chef::Config[:quiet_logging]
     end
 
     # Wire up a notification to run the start handlers when the chef run
@@ -88,13 +88,13 @@ class Chef
     def self.run_report_handlers(run_status)
       events = run_status.events
       events.handlers_start(report_handlers.size)
-      Chef::Log.info("Running report handlers")
+      Chef::Log.info("Running report handlers") unless Chef::Config[:quiet_logging]
       report_handlers.each do |handler|
         handler.run_report_safely(run_status)
         events.handler_executed(handler)
       end
       events.handlers_completed
-      Chef::Log.info("Report handlers complete")
+      Chef::Log.info("Report handlers complete") unless Chef::Config[:quiet_logging]
     end
 
     # Wire up a notification to run the report handlers if the chef run

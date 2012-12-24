@@ -161,16 +161,16 @@ class Chef
     # boolean:: Return value from #do_run. Should always returns true.
     def run
       if(Chef::Config[:client_fork] && Process.respond_to?(:fork))
-        Chef::Log.info "Forking chef instance to converge..."
+        Chef::Log.info "Forking chef instance to converge..." unless Chef::Config[:quiet_logging]
         pid = fork do
-          Chef::Log.info "Forked instance now converging"
+          Chef::Log.info "Forked instance now converging" unless Chef::Config[:quiet_logging]
           do_run
           exit
         end
-        Chef::Log.info "Fork successful. Waiting for new chef pid: #{pid}"
+        Chef::Log.info "Fork successful. Waiting for new chef pid: #{pid}" unless Chef::Config[:quiet_logging]
         result = Process.waitpid2(pid)
         raise "Forked convergence run failed" unless result.last.success?
-        Chef::Log.info "Forked child successfully reaped (pid: #{pid})"
+        Chef::Log.info "Forked child successfully reaped (pid: #{pid})" unless Chef::Config[:quiet_logging]
         true
       else
         do_run
@@ -272,8 +272,8 @@ class Chef
       #   "#{NAME}@#{VERSION}"
       @expanded_run_list_with_versions = @run_list_expansion.recipes.with_version_constraints_strings
 
-      Chef::Log.info("Run List is [#{@node.run_list}]")
-      Chef::Log.info("Run List expands to [#{@expanded_run_list_with_versions.join(', ')}]")
+      Chef::Log.info("Run List is [#{@node.run_list}]") unless Chef::Config[:quiet_logging]
+      Chef::Log.info("Run List expands to [#{@expanded_run_list_with_versions.join(', ')}]") unless Chef::Config[:quiet_logging]
 
       @run_status = Chef::RunStatus.new(@node, @events)
 
@@ -400,7 +400,7 @@ class Chef
       run_context = nil
 
       @events.run_start(Chef::VERSION)
-      Chef::Log.info("*** Chef #{Chef::VERSION} ***")
+      Chef::Log.info("*** Chef #{Chef::VERSION} ***") unless Chef::Config[:quiet_logging]
       enforce_path_sanity
       run_ohai
       @events.ohai_completed(node)
@@ -412,7 +412,7 @@ class Chef
         build_node
 
         run_status.start_clock
-        Chef::Log.info("Starting Chef Run for #{node.name}")
+        Chef::Log.info("Starting Chef Run for #{node.name}") unless Chef::Config[:quiet_logging]
         run_started
 
         run_context = setup_run_context
@@ -422,7 +422,7 @@ class Chef
         save_updated_node
 
         run_status.stop_clock
-        Chef::Log.info("Chef Run complete in #{run_status.elapsed_time} seconds")
+        Chef::Log.info("Chef Run complete in #{run_status.elapsed_time} seconds") unless Chef::Config[:quiet_logging]
         run_completed_successfully
         @events.run_completed(node)
         true

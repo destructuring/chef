@@ -141,7 +141,8 @@ class Chef
     # Where the cookbooks are located. Meaning is somewhat context dependent between
     # knife, chef-client, and chef-solo.
     cookbook_path [ platform_specific_path("/var/chef/cookbooks"),
-                    platform_specific_path("/var/chef/site-cookbooks") ]
+                    platform_specific_path("/var/chef/site-cookbooks") ] +
+                    $:.collect {|x| File.join(File.expand_path("..", x), "cookbooks") }.select {|x| File.directory? x }
 
     # An array of paths to search for knife exec scripts if they aren't in the current directory
     script_path []
@@ -177,7 +178,8 @@ class Chef
     log_level :info
     log_location STDOUT
     # toggle info level log items that can create a lot of output
-    verbose_logging false
+    verbose_logging true 
+    quiet_logging false
     node_name nil
     node_path platform_specific_path("/var/chef/node")
     diff_disable            false
