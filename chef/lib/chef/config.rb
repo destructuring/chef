@@ -51,14 +51,14 @@ class Chef
       #10.times { puts "* " * 40}
       #pp caller
       
-      path = File.join(ENV['MICROWAVE_ROOT'] || '/', path)
-
       if RUBY_PLATFORM =~ /mswin|mingw|windows/
         # turns /etc/chef/client.rb into C:/chef/client.rb
         system_drive = ENV['SYSTEMDRIVE'] ? ENV['SYSTEMDRIVE'] : ""
-        path = File.join(system_drive, path.split('/')[2..-1])
+        path = File.join(system_drive, (ENV['MICROWAVE_ROOT'] || '').split('/'), path.split('/')[2..-1])
         # ensure all forward slashes are backslashes
         path.gsub!(File::SEPARATOR, (File::ALT_SEPARATOR || '\\'))
+      else
+        path = File.join(ENV['MICROWAVE_ROOT'] || '', path)
       end
       path
     end

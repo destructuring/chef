@@ -129,18 +129,21 @@ describe Chef::Config do
     it "should return given path on non-windows systems" do
       platform_mock :unix do
         path = "/etc/chef/cookbooks"
-        Chef::Config.platform_specific_path(path).should == "/etc/chef/cookbooks"
+        Chef::Config.platform_specific_path(path).should == "#{ENV['MICROWAVE_ROOT']}/etc/chef/cookbooks"
       end
     end
 
     it "should return a windows path on windows systems" do
       platform_mock :windows do
         path = "/etc/chef/cookbooks"
+        save_microwave_root = ENV['MICROWAVE_ROOT']
+        expected_microwave_root = save_microwave_root.gsub(File::SEPARATOR, (File::ALT_SEPARATOR || '\\'))
+        ENV.stub!(:[]).with('MICROWAVE_ROOT').and_return(save_microwave_root)
         ENV.stub!(:[]).with('SYSTEMDRIVE').and_return('C:')
         # match on a regex that looks for the base path with an optional
         # system drive at the beginning (c:)
         # system drive is not hardcoded b/c it can change and b/c it is not present on linux systems
-        Chef::Config.platform_specific_path(path).should == "C:\\chef\\cookbooks"
+        Chef::Config.platform_specific_path(path).should == "C:#{expected_microwave_root}\\chef\\cookbooks"
       end
     end
   end
@@ -160,7 +163,7 @@ describe Chef::Config do
       backup_path = if windows?
         "#{ENV['SYSTEMDRIVE']}\\chef\\backup"
       else
-        "/var/chef/backup"
+        Chef::Config.platform_specific_path("/var/chef/backup")
       end
       Chef::Config[:file_backup_path].should == backup_path
     end
@@ -181,7 +184,7 @@ describe Chef::Config do
       data_bag_path = if windows?
         "C:\\chef\\data_bags"
       else
-        "/var/chef/data_bags"
+        Chef::Config.platform_specific_path("/var/chef/data_bags")
       end
 
       Chef::Config[:data_bag_path].should == data_bag_path

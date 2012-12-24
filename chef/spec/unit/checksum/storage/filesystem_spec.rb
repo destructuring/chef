@@ -33,23 +33,23 @@ describe Chef::Checksum::Storage::Filesystem do
   end
 
   it "has the path to the file in the checksum repo" do
-    @storage.file_location.should == "/var/chef/checksums/3f/3fafecfb15585ede6b840158cbc2f399"
+    @storage.file_location.should == Chef::Config.platform_specific_path("/var/chef/checksums/3f/3fafecfb15585ede6b840158cbc2f399")
   end
 
   it "has the path the the file's subdirectory in the checksum repo" do
-    @storage.checksum_repo_directory.should == "/var/chef/checksums/3f"
+    @storage.checksum_repo_directory.should == Chef::Config.platform_specific_path("/var/chef/checksums/3f")
   end
 
   it "commits a file from a given location to the checksum repo location" do
     File.should_receive(:rename).with("/tmp/arbitrary_file_location", @storage.file_location)
-    FileUtils.should_receive(:mkdir_p).with("/var/chef/checksums/3f")
+    FileUtils.should_receive(:mkdir_p).with(Chef::Config.platform_specific_path("/var/chef/checksums/3f"))
 
     @storage.commit("/tmp/arbitrary_file_location")
   end
 
   it "reverts committing a file" do
     File.should_receive(:rename).with("/tmp/arbitrary_file_location", @storage.file_location)
-    FileUtils.should_receive(:mkdir_p).with("/var/chef/checksums/3f")
+    FileUtils.should_receive(:mkdir_p).with(Chef::Config.platform_specific_path("/var/chef/checksums/3f"))
     @storage.commit("/tmp/arbitrary_file_location")
 
     File.should_receive(:rename).with(@storage.file_location, "/tmp/arbitrary_file_location")

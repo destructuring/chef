@@ -58,7 +58,7 @@ describe Chef::Formatters::ErrorInspectors::CompileErrorInspector do
         "/home/someuser/.multiruby/gems/chef/lib/chef/client.rb:123:in `run'"
       ]
       @exception.set_backtrace(@trace)
-      @path = "/var/chef/cache/cookbooks/syntax-err/recipes/default.rb"
+      @path = Chef::Config.platform_specific_path("/var/chef/cache/cookbooks/syntax-err/recipes/default.rb")
       @inspector = described_class.new(@path, @exception)
 
       @expected_filtered_trace = [
@@ -71,16 +71,16 @@ describe Chef::Formatters::ErrorInspectors::CompileErrorInspector do
 
   describe "when explaining an error in the compile phase" do
     before do
-      Chef::Config.stub!(:cookbook_path).and_return([ "/var/chef/cache/cookbooks" ])
+      Chef::Config.stub!(:cookbook_path).and_return([ Chef::Config.platform_specific_path("/var/chef/cache/cookbooks") ])
       recipe_lines = BAD_RECIPE.split("\n").map {|l| l << "\n" }
-      IO.should_receive(:readlines).with("/var/chef/cache/cookbooks/syntax-err/recipes/default.rb").and_return(recipe_lines)
+      IO.should_receive(:readlines).with(Chef::Config.platform_specific_path("/var/chef/cache/cookbooks/syntax-err/recipes/default.rb")).and_return(recipe_lines)
       @trace = [
-        "/var/chef/cache/cookbooks/syntax-err/recipes/default.rb:14:in `from_file'",
-        "/var/chef/cache/cookbooks/syntax-err/recipes/default.rb:11:in `from_file'",
+        Chef::Config.platform_specific_path("/var/chef/cache/cookbooks/syntax-err/recipes/default.rb:14:in `from_file'"),
+        Chef::Config.platform_specific_path("/var/chef/cache/cookbooks/syntax-err/recipes/default.rb:11:in `from_file'"),
         "/usr/local/lib/ruby/gems/chef/lib/chef/client.rb:123:in `run'" # should not display
       ]
       @exception.set_backtrace(@trace)
-      @path = "/var/chef/cache/cookbooks/syntax-err/recipes/default.rb"
+      @path = Chef::Config.platform_specific_path("/var/chef/cache/cookbooks/syntax-err/recipes/default.rb")
       @inspector = described_class.new(@path, @exception)
       @inspector.add_explanation(@description)
     end
@@ -123,7 +123,7 @@ describe Chef::Formatters::ErrorInspectors::CompileErrorInspector do
         "C:/opscode/chef/bin/chef-client:19:in `<main>'"
       ]
       @exception.set_backtrace(@trace)
-      @path = "/var/chef/cache/cookbooks/syntax-err/recipes/default.rb"
+      @path = Chef::Config.platform_specific_path("/var/chef/cache/cookbooks/syntax-err/recipes/default.rb")
       @inspector = described_class.new(@path, @exception)
       @inspector.add_explanation(@description)
     end
@@ -181,7 +181,7 @@ describe Chef::Formatters::ErrorInspectors::CompileErrorInspector do
         "c:/opscode/chef/bin/chef-client:19:in `<main>'"
       ]
       @exception.set_backtrace(@trace)
-      @path = "/var/chef/cache/cookbooks/syntax-err/recipes/default.rb"
+      @path = Chef::Config.platform_specific_path("/var/chef/cache/cookbooks/syntax-err/recipes/default.rb")
       @inspector = described_class.new(@path, @exception)
       @inspector.add_explanation(@description)
     end
