@@ -212,7 +212,7 @@ class Chef
     end
 
     def run_ohai
-      ohai.all_plugins
+      # ohai.all_plugins
     end
 
     def node_name
