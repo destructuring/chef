@@ -196,7 +196,7 @@ class Chef
       run_status.run_context = run_context
 
       run_context.load(@run_list_expansion)
-      assert_cookbook_path_not_empty(run_context)
+      #assert_cookbook_path_not_empty(run_context)
       run_context
     end
 
