@@ -18,6 +18,7 @@
 
 require 'chef/handler'
 require 'chef/resource/directory'
+require 'chef/config'
 
 class Chef
   class Handler
@@ -27,7 +28,7 @@ class Chef
 
       def initialize(config={})
         @config = config
-        @config[:path] ||= "/var/chef/reports"
+        @config[:path] ||= Chef::Config.platform_specific_path("/var/chef/reports")
         @config
       end
 

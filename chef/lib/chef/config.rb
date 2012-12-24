@@ -50,6 +50,8 @@ class Chef
     def self.platform_specific_path(path)
       #10.times { puts "* " * 40}
       #pp caller
+      
+      path = "#{alt_root}/#{path}"
 
       if RUBY_PLATFORM =~ /mswin|mingw|windows/
         # turns /etc/chef/client.rb into C:/chef/client.rb
@@ -131,7 +133,7 @@ class Chef
     authorized_openid_identifiers nil
     authorized_openid_providers nil
     openid_cstore_couchdb false
-    openid_cstore_path "/var/chef/openid/cstore"
+    openid_cstore_path platform_specific_path("/var/chef/openid/cstore")
 
     # The number of times the client should retry when registering with the server
     client_registration_retries 5
@@ -145,10 +147,10 @@ class Chef
     script_path []
 
     # Where files are stored temporarily during uploads
-    sandbox_path "/var/chef/sandboxes"
+    sandbox_path platform_specific_path("/var/chef/sandboxes")
 
     # Where cookbook files are stored on the server (by content checksum)
-    checksum_path "/var/chef/checksums"
+    checksum_path platform_specific_path("/var/chef/checksums")
 
     # CouchDB database name to use
     couchdb_database "chef"
@@ -175,9 +177,9 @@ class Chef
     log_level :info
     log_location STDOUT
     # toggle info level log items that can create a lot of output
-    verbose_logging true
+    verbose_logging false
     node_name nil
-    node_path "/var/chef/node"
+    node_path platform_specific_path("/var/chef/node")
     diff_disable            false
     diff_filesize_threshold 10000000
     diff_output_threshold   1000000
@@ -196,7 +198,7 @@ class Chef
     rest_timeout 300
     run_command_stderr_timeout 120
     run_command_stdout_timeout 120
-    solo  false
+    solo  true
     splay nil
     why_run false
     color false
@@ -222,9 +224,9 @@ class Chef
     recipe_url nil
 
     solr_url "http://localhost:8983/solr"
-    solr_jetty_path "/var/chef/solr-jetty"
-    solr_data_path "/var/chef/solr/data"
-    solr_home_path "/var/chef/solr"
+    solr_jetty_path platform_specific_path("/var/chef/solr-jetty")
+    solr_data_path platform_specific_path("/var/chef/solr/data")
+    solr_home_path platform_specific_path("/var/chef/solr")
     solr_heap_size "256M"
     solr_java_opts nil
 
@@ -278,8 +280,8 @@ class Chef
     # Server Signing CA
     #
     # In truth, these don't even have to change
-    signing_ca_cert "/var/chef/ca/cert.pem"
-    signing_ca_key "/var/chef/ca/key.pem"
+    signing_ca_cert platform_specific_path("/var/chef/ca/cert.pem")
+    signing_ca_key platform_specific_path("/var/chef/ca/key.pem")
     signing_ca_user nil
     signing_ca_group nil
     signing_ca_country "US"
@@ -325,5 +327,7 @@ class Chef
     # returns a platform specific path to the user home dir
     windows_home_path = ENV['SYSTEMDRIVE'] + ENV['HOMEPATH'] if ENV['SYSTEMDRIVE'] && ENV['HOMEPATH']
     user_home (ENV['HOME'] || windows_home_path || ENV['USERPROFILE'])
+
+    alt_root (ENV['MICROWAVE_ROOT'] || '/')
   end
 end
