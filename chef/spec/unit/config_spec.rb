@@ -129,16 +129,14 @@ describe Chef::Config do
     it "should return given path on non-windows systems" do
       platform_mock :unix do
         path = "/etc/chef/cookbooks"
-        Chef::Config.platform_specific_path(path).should == "#{ENV['MICROWAVE_ROOT']}/etc/chef/cookbooks"
+        Chef::Config.platform_specific_path(path).should == "#{Chef::Config[:alt_root]}/etc/chef/cookbooks"
       end
     end
 
     it "should return a windows path on windows systems" do
       platform_mock :windows do
         path = "/etc/chef/cookbooks"
-        save_microwave_root = ENV['MICROWAVE_ROOT']
-        expected_microwave_root = save_microwave_root.gsub(File::SEPARATOR, (File::ALT_SEPARATOR || '\\'))
-        ENV.stub!(:[]).with('MICROWAVE_ROOT').and_return(save_microwave_root)
+        expected_microwave_root = Chef::Config[:alt_root].gsub(File::SEPARATOR, (File::ALT_SEPARATOR || '\\'))
         ENV.stub!(:[]).with('SYSTEMDRIVE').and_return('C:')
         # match on a regex that looks for the base path with an optional
         # system drive at the beginning (c:)

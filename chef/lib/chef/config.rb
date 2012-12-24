@@ -54,14 +54,16 @@ class Chef
       if RUBY_PLATFORM =~ /mswin|mingw|windows/
         # turns /etc/chef/client.rb into C:/chef/client.rb
         system_drive = ENV['SYSTEMDRIVE'] ? ENV['SYSTEMDRIVE'] : ""
-        path = File.join(system_drive, ENV['MICROWAVE_ROOT'].split('/'), path.split('/')[2..-1])
+        path = File.join(system_drive, Chef::Config[:alt_root].split('/'), path.split('/')[2..-1])
         # ensure all forward slashes are backslashes
         path.gsub!(File::SEPARATOR, (File::ALT_SEPARATOR || '\\'))
       else
-        path = File.join(ENV['MICROWAVE_ROOT'], path)
+        path = File.join(Chef::Config[:alt_root], path)
       end
       path
     end
+
+    alt_root Dir.pwd
 
     # Override the config dispatch to set the value of multiple server options simultaneously
     #
@@ -180,7 +182,7 @@ class Chef
     # toggle info level log items that can create a lot of output
     verbose_logging true 
     quiet_logging false
-    node_name nil
+    node_name Socket.gethostname
     node_path platform_specific_path("/var/chef/node")
     diff_disable            false
     diff_filesize_threshold 10000000
