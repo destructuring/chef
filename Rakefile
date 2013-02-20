@@ -26,7 +26,7 @@ require './tasks/rspec.rb'
 
 GEM_NAME = "chef"
 
-spec = eval(File.read("chef.gemspec"))
+spec = eval(File.read("microwave.gemspec"))
 
 # This has to be here or else the docs get generated *after* the gem is created
 task :gem => 'docs:all'
