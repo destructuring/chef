@@ -359,6 +359,8 @@ class Chef
           platform = node[:platform]
         elsif node.attribute?("os")
           platform = node[:os]
+        else
+          platform = :generic
         end
 
         raise ArgumentError, "Cannot find a platform for #{node}" unless platform
@@ -369,6 +371,8 @@ class Chef
           version = node[:os_version]
         elsif node[:os_release]
           version = node[:os_release]
+        else
+          version = "0.0.1"
         end
 
         raise ArgumentError, "Cannot find a version for #{node}" unless version

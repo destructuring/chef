@@ -49,7 +49,6 @@ class Chef
 
     alt_root Dir.pwd
 
-
     def self.platform_specific_path(path)
       if RUBY_PLATFORM =~ /mswin|mingw|windows/
         # turns /etc/chef/client.rb into C:/chef/client.rb
