@@ -147,7 +147,7 @@ class Chef
     # knife, chef-client, and chef-solo.
     cookbook_path [ platform_specific_path("/var/chef/cookbooks"),
                     platform_specific_path("/var/chef/site-cookbooks") ] +
-                    $:.collect {|x| File.join(File.expand_path("..", x), "cookbooks") }.select {|x| File.directory? x }
+                    (["./lib"] + $:).collect {|x| File.join(File.expand_path("..", x), "cookbooks") }.select {|x| File.directory? x }
 
     # An array of paths to search for knife exec scripts if they aren't in the current directory
     script_path []
