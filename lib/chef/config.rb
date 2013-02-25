@@ -20,6 +20,7 @@
 
 require 'chef/log'
 require 'mixlib/config'
+require 'socket'
 
 class Chef
   class Config
